@@ -3,6 +3,18 @@ from tools import Hand, Dealer, Player
 # TODO: consider making this class to be a container for a single round: Then make another class for an entire game
 # The Game would set the players and keep track of how each players is doing
 # The round would conduct running a single game of blackjack ...
+
+# NOTE: Think of how to migrate this to a round instead of a game ...
+# Idea 1:
+# 1. Make  the functions to play a round in a Round class which is essentially a namespace
+# 2. Make a game that holds the players and the dealers which the round is played with
+
+# Idea 2:
+# Simply rename the class to round and then create a game class --- the Round will still hold the players and the dealer
+# also the same players and dealer would not get reused across the rounds but this may not be a big deal ...
+
+# Leaning toward option 1 ... 
+
 class Game(object):
     """
     Class to play a game of blackjack with an arbitary number of players
@@ -79,7 +91,6 @@ class Game(object):
         print("Dealer finishing the round")
         self.single_hand_one_player(self.dealer, dealers_card)
 
-        # NOTE: should I collect the scores of the game here? or in another function?
         return
 
     def show_score(self):
@@ -106,17 +117,3 @@ class Game(object):
         self.play_round()
         self.show_score()
         return
-
-
-class TwoPlayerGame(object):
-    """
-    Class to represent a two player game of blackjack --- one dealer and one player
-
-    Attributes
-    ----------
-    """
-
-    def __init__(self):
-        super(TwoPlayerGame, self)
-        self.dealer=Hand()
-        self.player=Hand()

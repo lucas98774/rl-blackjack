@@ -6,3 +6,6 @@ This project is to start learning about reinforcement learning. The starting tas
 
 At first everything will be looked to implement from scratch and then a solution using built in packages (gym) will be used.
 
+## Evironment:
+Python Version: 3.8.12
+Pip version: 21.2.2
