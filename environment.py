@@ -1,4 +1,4 @@
-from players import Dealer, Player
+from players import Dealer, Player, IPlayer
 from round import start_round, play_round
 
 class Game(object):
@@ -63,3 +63,12 @@ class Game(object):
             start_round(self.dealer, self.players)
             this_score, this_busted = play_round(self.dealer, self.players)
             self.show_score()
+
+class InteractiveGame(Game):
+    """ Class for an interactive Game --- assuming the player is the interactive portion """
+    def __init__(self, nplayers: int = 1, nrounds: int = 1, **kwargs):
+        print("NOTE: There is only one player supported for interactive games right now ...")
+        # new constructor
+        self.dealer = Dealer(**kwargs)
+        self.players = [IPlayer()]
+        self.nrounds = nrounds

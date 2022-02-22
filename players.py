@@ -48,8 +48,8 @@ class IPlayer(Player):
     """
     def get_action(self) -> str:
         options = ["hit", "stick"]
-        valid_options = ', '.join(self.options)
-        action = str(input(f"Please enter an action (one of {valid_options})"))
+        valid_options = ', '.join(options)
+        action = str(input(f"Please enter an action (one of {valid_options}): "))
 
         assert action in options, f"Selected option {action} is not one of {valid_options}"
         return action
@@ -57,12 +57,14 @@ class IPlayer(Player):
     def policy(self, dealers_value) -> str:
         print(f"----Your value is {self.total} and the dealer has a face up card with a value of {dealers_value}")
 
-        while True:
+        while True and self.total <= 21:
             try:
                 action = self.get_action()
                 return action
             except AssertionError:
                 print("Please select a valid option")
+
+        return "stay"
 
 class Dealer(Player):
     """
