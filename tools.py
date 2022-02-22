@@ -266,5 +266,5 @@ class Dealer(Player):
         return 
     
     def reset_deck(self) -> None:
-        self.deck = Deck(suffle=True, **self.deck_kwargs)
+        self.deck = Deck(shuffle=True, **self.deck_kwargs)
         return
