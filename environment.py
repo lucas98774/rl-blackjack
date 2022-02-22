@@ -37,7 +37,7 @@ class Game(object):
         # show scores of the players
 
         # preallocate list
-        winners = [False] * len(self.players + 1)
+        winners = [False] * (len(self.players)+1)
         for i, player in enumerate(self.players):
             print(f'Players {i} final score: {player.total}')
             if player.total > self.dealer.total and not player.bust:
