@@ -1,4 +1,4 @@
-from tools import Dealer, Player
+from players import Dealer, Player
 from round import start_round, play_round
 
 class Game(object):
