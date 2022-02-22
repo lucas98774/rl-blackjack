@@ -1,4 +1,5 @@
 import random
+from typing import List, Dict
 from abc import ABC, abstractmethod
 
 class Card(object):
@@ -23,7 +24,7 @@ class Card(object):
         self.suit = suit
         self.value = value
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return f"{self.label} of {self.suit}"
     
     def __int__(self) -> int:
@@ -59,7 +60,7 @@ class CardStack(ABC):
     def __len__(self) -> int:
         return len(self.cards)
 
-    def __getitem__(self, index):
+    def __getitem__(self, index) -> Card:
         """ Function to show a card given an index """
         if index > len(self):
             raise AssertionError(f"That index is outside the size of this deck\nDeck size: {len(self)}, Index recieved {index}")
@@ -79,7 +80,7 @@ class Hand(CardStack):
         super(Hand, self).__init__(*args)
         self.msg += f" totaling {self.total}"
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         # this is not copy be reference since it is a primative ... NOTE: check this
         msg = self.msg
         if self.bust:
@@ -87,11 +88,11 @@ class Hand(CardStack):
         return msg
 
     @property
-    def total(self):
+    def total(self) -> int:
         return sum(self.cards)
 
     @property
-    def bust(self):
+    def bust(self) -> bool:
         if self.total < 21:
             return False
         return True
@@ -147,7 +148,7 @@ class Deck(CardStack):
         self.cards = self._create_deck()
         self.counter=0
         
-    def _create_deck(self):
+    def _create_deck(self) -> List[Card]:
         """
         Function to create a Deck
 
@@ -168,7 +169,7 @@ class Deck(CardStack):
     def __repr__(self) -> str:
         return f"{self.repeats} Deck(s) with " + self.msg
 
-    def deal_card(self):
+    def deal_card(self) -> Card:
         """ Function to deal a single card from the deck """
         # NOTE: is this useful?
         card = self.cards.pop(0)
@@ -177,7 +178,7 @@ class Deck(CardStack):
     def __iter__(self):
         return self
 
-    def __next__(self):
+    def __next__(self) -> Card:
         if self.counter >= len(self):
             raise StopIteration
         current_card = self.__getitem__(self.counter)
@@ -203,18 +204,19 @@ class Player(object):
     def __repr__(self) -> str:
         return f"Player"
 
-    def add_card(self, card):
+    def add_card(self, card) -> None:
         self.hand.cards.append(card)
+        return
 
     @property
-    def total(self):
+    def total(self) -> int:
         return self.hand.total
     
     @property
-    def bust(self):
+    def bust(self) -> bool:
         return self.hand.bust
 
-    def policy(self, dealers_value):
+    def policy(self, dealers_value) -> str:
         # the policy will be a function of this players hand and the dealers hand ...
         # hardcode a policy for now to simulate a game ...
 
@@ -239,7 +241,7 @@ class Dealer(Player):
     def __repr__(self) -> str:
         return f"Dealer"
     
-    def policy(self, dealers_value=None):
+    def policy(self, dealers_value=None) -> str:
         # need to intake the second parameter for ease of implementation
         # Basic policy for the dealer
         total = self.hand.total
@@ -248,7 +250,7 @@ class Dealer(Player):
         else:
             return 'stay'
     
-    def deal_card(self, player):
+    def deal_card(self, player) -> None:
         """
         Method to deal a card to another player from the deck
         """
@@ -263,9 +265,6 @@ class Dealer(Player):
 
         return 
     
-    def reset_deck(self):
+    def reset_deck(self) -> None:
         self.deck = Deck(suffle=True, **self.deck_kwargs)
-
-
-
-
+        return
