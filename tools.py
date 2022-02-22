@@ -1,5 +1,5 @@
 import random
-from typing import List, Dict
+from typing import List
 from abc import ABC, abstractmethod
 
 class Card(object):
@@ -42,11 +42,6 @@ class Card(object):
 
     def __radd__(self, other_card) -> int:
         return self.__add__(other_card)
-
-# NOTE: Should a hand and a deck be releated??
-# Idea: Implement a stack of cards --- allows:
-# 1. Holding multiple cards
-# 2. Traversing that stack of cards on at a time (it is an iterator)
 
 class CardStack(ABC):
     """
@@ -184,87 +179,3 @@ class Deck(CardStack):
         current_card = self.__getitem__(self.counter)
         self.counter += 1
         return current_card
-
-class Player(object):
-    """
-    Class for a player in the game
-    The idea is the player has a hand and __takes actions___ (this is key for rl)
-    
-    """ 
-    # NOTE: this is the actions space
-    actions = {
-        'stay': 0,
-        'hit': 1
-    }
-
-    def __init__(self):
-        super(Player, self)
-        self.hand=Hand()
-
-    def __repr__(self) -> str:
-        return f"Player"
-
-    def add_card(self, card) -> None:
-        self.hand.cards.append(card)
-        return
-
-    @property
-    def total(self) -> int:
-        return self.hand.total
-    
-    @property
-    def bust(self) -> bool:
-        return self.hand.bust
-
-    def policy(self, dealers_value) -> str:
-        # the policy will be a function of this players hand and the dealers hand ...
-        # hardcode a policy for now to simulate a game ...
-
-        assumed_total = dealers_value + 8
-        if self.total <= assumed_total and self.total < 18:
-            return 'hit'
-        return 'stay'
-
-class Dealer(Player):
-    """
-    Class for a dealer ... This is the house
-    The difference between a dealer and a player is a dealer has a predefined policy where a player can change, learn
-    and update their policy (method to choose an action)
-
-    """
-    def __init__(self, **kwargs):
-        super().__init__()
-        # NOTE: Should the dealer have the deck and the cards?
-        self.deck_kwargs = kwargs  # save the deck kwargs
-        self.deck = Deck(shuffle=True, **kwargs)
-
-    def __repr__(self) -> str:
-        return f"Dealer"
-    
-    def policy(self, dealers_value=None) -> str:
-        # need to intake the second parameter for ease of implementation
-        # Basic policy for the dealer
-        total = self.hand.total
-        if total < 17:
-            return 'hit'
-        else:
-            return 'stay'
-    
-    def deal_card(self, player) -> None:
-        """
-        Method to deal a card to another player from the deck
-        """
-        # deal the card and pass it to the player --- handle the odd case where you run out of cards
-        try:
-            card = self.deck.deal_card()
-        except IndexError:
-            print("Dealer ran out of cards, grabbing a new deck")
-            self.reset_deck()
-            card = self.deck.deal_card()
-        player.add_card(card)
-
-        return 
-    
-    def reset_deck(self) -> None:
-        self.deck = Deck(shuffle=True, **self.deck_kwargs)
-        return

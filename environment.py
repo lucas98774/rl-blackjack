@@ -5,7 +5,7 @@ class Game(object):
     """
     Class to play a game of blackjack with an arbitary number of players
 
-    TODO: Think about what high level metrics should be kept across rounds
+    TODO: Think about what high level metrics should be kept across rounds --- scores? Wins? 
     
     """
     def __init__(self, nplayers:int = 1, nrounds:int = 1, **kwargs):
@@ -35,17 +35,21 @@ class Game(object):
 
     def show_score(self) -> None:
         # show scores of the players
-        winners = []
+
+        # preallocate list
+        winners = [False] * len(self.players + 1)
         for i, player in enumerate(self.players):
             print(f'Players {i} final score: {player.total}')
             if player.total > self.dealer.total and not player.bust:
                 # if you beat the dealer and did not bust
-                winners.append(str(i))
+                winners[i] = True
             elif self.dealer.bust and not player.bust:
                 # if the dealer busted and you did not bust
-                winners.append(str(i))
+                winners[i] = True
 
         print(f"Dealer's score: {self.dealer.total}")
+
+        winners = [str(i) for winner in winners if winner]
         
         if winners:
             print(f"Winning players were: {', '.join(winners)}")
