@@ -171,11 +171,15 @@ class Deck(CardStack):
         return card
 
     def __iter__(self):
-        return self
+        return iter(self.cards)
+    
+    # NOTE: This is the full code to make an iterator from a class
+    # def __iter__(self):
+    #     return self
 
-    def __next__(self) -> Card:
-        if self.counter >= len(self):
-            raise StopIteration
-        current_card = self.__getitem__(self.counter)
-        self.counter += 1
-        return current_card
+    # def __next__(self) -> Card:
+    #     if self.counter >= len(self):
+    #         raise StopIteration
+    #     current_card = self.__getitem__(self.counter)
+    #     self.counter += 1
+    #     return current_card
