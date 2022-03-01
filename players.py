@@ -47,7 +47,7 @@ class IPlayer(Player):
     # NOTE: this class has not been tested yet ...
     """
     def get_action(self) -> str:
-        options = ["hit", "stick"]
+        options = list(self.actions.keys())
         valid_options = ', '.join(options)
         action = str(input(f"Please enter an action (one of {valid_options}): "))
 
