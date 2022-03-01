@@ -84,7 +84,16 @@ class Hand(CardStack):
 
     @property
     def total(self) -> int:
-        return sum(self.cards)
+        num_aces = 0
+        total_value = 0
+        for card in self.cards:
+            if card.label == 'Ace':
+                num_aces += 1
+            total_value += card.value
+        for i in range(num_aces):
+            if total_value > 21:
+                total_value -= 10
+        return total_value
 
     @property
     def bust(self) -> bool:
