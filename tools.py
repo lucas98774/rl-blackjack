@@ -83,8 +83,17 @@ class Hand(CardStack):
         return msg
 
     @property
+    def aces(self) -> int:
+        return sum([card.label == 'Ace' for card in self.cards])
+
+    @property
     def total(self) -> int:
-        return sum(self.cards)
+        total = sum(self.cards)
+        if total > 21:
+            # NOTE: I am hoping this loops over the 
+            for _ in range(self.aces):
+                yield total-10
+        return total
 
     @property
     def bust(self) -> bool:
