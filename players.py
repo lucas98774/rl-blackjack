@@ -47,6 +47,10 @@ class IPlayer(Player):
     # NOTE: this class has not been tested yet ...
     """
     def get_action(self) -> str:
+        print('---Current Hand---')
+        for c in self.hand.cards:
+            print(f'  {c} -> {int(c)}')
+
         options = list(self.actions.keys())
         valid_options = ', '.join(options)
         action = str(input(f"Please enter an action (one of {valid_options}): "))
