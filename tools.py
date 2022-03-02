@@ -97,9 +97,7 @@ class Hand(CardStack):
 
     @property
     def bust(self) -> bool:
-        if self.total < 21:
-            return False
-        return True
+        return self.total > 21
 
 class Deck(CardStack):
     # This represents the environment
