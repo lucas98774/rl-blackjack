@@ -83,18 +83,28 @@ class Hand(CardStack):
         return msg
 
     @property
-    def aces(self) -> int:
-        return sum([card.label == 'Ace' for card in self.cards])
+    def aces(self) -> List[Card]:
+        return [card for i, card in enumerate(self.cards) if card.label == 'Ace' and card.value == 11]
 
     @property
     def total(self) -> int:
         total = sum(self.cards)
-        if total > 21:
-            # NOTE: I am hoping this loops over the 
-            for _ in range(self.aces):
-                yield total-10
-        return total
+        usable_aces = len(self.aces)
 
+        if total <= 21:
+            return total
+
+        elif usable_aces < 1:
+            return total
+
+        else:
+            # get index of the first ace we have in our hand
+            first_ace = self.aces[0]
+            # change the value of the ace from 11 to 1
+            first_ace.value = 1
+            # recalculate the hands total
+            return self.total
+            
     @property
     def bust(self) -> bool:
         return self.total > 21
