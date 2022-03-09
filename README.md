@@ -1,5 +1,7 @@
 # README
 
+![test-game](https://github.com/lucas98774/rl-blackjack/blob/main/.github/workflows/test-game.yml/badge.svg)
+
 This project is to start learning about reinforcement learning. The starting task will be to solve the gamblers dilema with the blackjack game.
 
 ## Implementation
