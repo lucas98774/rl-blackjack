@@ -10,5 +10,3 @@ def test_game():
         gm.play()
     except:
         raise AssertionError("Something went wrong when playing a game")
-
-# test to trigger workflow
