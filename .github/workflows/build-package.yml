@@ -31,4 +31,5 @@ jobs:
         if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
     - name: Build package
       run: |
+        python -m build
         pip install dist/blackjack-0.0.1-py3-none-any.whl
