@@ -2,8 +2,6 @@ import random
 from typing import List
 from abc import ABC, abstractmethod
 
-# test update
-
 class Card(object):
     # This is a fundamental object
     """
