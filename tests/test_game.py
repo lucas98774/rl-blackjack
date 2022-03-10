@@ -10,6 +10,3 @@ def test_game():
         gm.play()
     except:
         raise AssertionError("Something went wrong when playing a game")
-
-# if __name__ == '__main__':
-#     test_game()
