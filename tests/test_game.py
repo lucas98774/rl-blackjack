@@ -1,6 +1,4 @@
-import pytest
-
-from src.environment import Game
+from blackjack import Game
 
 # TODO: move this into the format for a test using pytest 
 # --- this will also require changing the code into a formal package
