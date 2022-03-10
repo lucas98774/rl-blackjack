@@ -29,10 +29,10 @@ jobs:
         pip install pytest
         python3 -m pip install --upgrade build
         if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
-    - name: Build package
-      run: |
-        python -m build
-        pip install -e .
+    # - name: Build package
+    #   run: |
+    #     python -m build
+    #     pip install -e .
     - name: Test with pytest --- Blackjack Game
       run: |
         if [ -d "tests/" ]; then pytest; fi
