@@ -1,16 +1,16 @@
 # This workflow will install Python dependencies, run tests and lint with a single version of Python
 # For more information see: https://help.github.com/actions/language-and-framework-guides/using-python-with-github-actions
 
-name: Test Game
+name: Build package
 
 on:
   push:
     paths:
-      - '**.py'
+      - 'src/blackjack/*'
     branches: [ package ]
   pull_request:
     paths: 
-      - '**.py'
+      - 'src/blackjack/*'
     branches: [ package ]
 
 jobs:
@@ -29,6 +29,6 @@ jobs:
         pip install pytest
         python3 -m pip install --upgrade build
         if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
-    - name: Test with pytest --- Blackjack Game
+    - name: Build package
       run: |
-        if [ -d "tests/" ]; then pytest; fi
+        pip install dist/blackjack-0.0.1-py3-none-any.whl
