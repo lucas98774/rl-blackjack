@@ -1,4 +1,4 @@
-from tools import Hand, Deck
+from .tools import Hand, Deck
 
 class Player(object):
     """

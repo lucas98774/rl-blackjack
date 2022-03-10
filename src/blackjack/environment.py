@@ -1,5 +1,5 @@
-from players import Dealer, Player, IPlayer
-from round import start_round, play_round
+from .players import Dealer, Player, IPlayer
+from .round import start_round, play_round
 
 class Game(object):
     """
