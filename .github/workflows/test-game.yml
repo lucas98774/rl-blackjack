@@ -6,11 +6,11 @@ name: Test Game
 on:
   push:
     paths:
-      - '*.py'
+      - '**/*.py'
     branches: [ package ]
   pull_request:
     paths: 
-      - '*.py'
+      - '**/*.py'
     branches: [ package ]
 
 jobs:
