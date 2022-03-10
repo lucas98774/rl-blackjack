@@ -11,4 +11,4 @@ def test_game():
     except:
         raise AssertionError("Something went wrong when playing a game")
 
-# test the workflow
+# test the workflow --- only the test-game
