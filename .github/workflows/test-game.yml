@@ -30,7 +30,7 @@ jobs:
         if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
     - name: Build package
       run: |
-        pip install dist/blackjack-0.0.1-py3-none-any.whl
+        find dist -iname *.whl -type f -exec pip install {} \;
     - name: Test with pytest --- Blackjack Game
       run: |
         if [ -d "tests/" ]; then pytest; fi
