@@ -8,12 +8,12 @@ on:
     paths:
       - 'src/blackjack/*'
       - '**.py'
-    branches: [ package ]
+    branches: [ main]
   pull_request:
     paths: 
       - 'src/blackjack/*'
       - '**.py'
-    branches: [ package ]
+    branches: [ main ]
 
 jobs:
   build:
