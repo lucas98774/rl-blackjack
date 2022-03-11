@@ -6,7 +6,6 @@ class Game(object):
     Class to play a game of blackjack with an arbitary number of players
 
     TODO: Think about what high level metrics should be kept across rounds --- scores? Wins? 
-    # Trigger build workflow
     """
     def __init__(self, nplayers:int = 1, nrounds:int = 1, **kwargs):
         """

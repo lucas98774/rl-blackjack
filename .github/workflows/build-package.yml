@@ -34,11 +34,10 @@ jobs:
         rm -r dist
         git config --local user.email "action@github.com"
         git config --local user.name "GitHub Action"
-        git add dist || git commit -m "Auto remove old build"
+        git add dist || git commit -m "Auto remove old package"
     - name: Build package
       run: |
         python -m build
-        pip install dist/blackjack-0.0.1-py3-none-any.whl
         find dist -iname *.whl -type f -exec pip install {}
     - name: Autocommit package
       run: |
