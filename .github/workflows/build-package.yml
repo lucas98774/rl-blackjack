@@ -29,7 +29,24 @@ jobs:
         pip install pytest
         python3 -m pip install --upgrade build
         if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+    - name: Remove old build
+      run: |
+        rm -r dist
+        git config --local user.email "action@github.com"
+        git config --local user.name "GitHub Action"
+        git add dist || git commit -m "Auto remove old build"
     - name: Build package
       run: |
         python -m build
         pip install dist/blackjack-0.0.1-py3-none-any.whl
+        find dist -iname *.whl -type f -exec pip install {}
+    - name: Autocommit package
+      run: |
+        git config --local user.email "action@github.com"
+        git config --local user.name "GitHub Action"
+        git add dist || git commit -m "Auto rebuild package"
+    - name: push package update
+      uses: ad-m/github-push-action@v0.5.0
+      with:
+        github_token: ${{ secrets.MY_TOKEN }}
+        branch: ${{ github.ref }}
