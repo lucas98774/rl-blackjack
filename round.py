@@ -31,7 +31,7 @@ def start_round(dealer, players) -> None:
     dealer.deal_card(dealer)
     return 
 
-def single_hand_one_player(dealer, player) -> None:
+def single_hand_one_player(dealer, player, other_players=[]) -> None:
     """ 
     Function to play out a single player's hand against the dealer 
     
@@ -39,12 +39,15 @@ def single_hand_one_player(dealer, player) -> None:
     ----------
     dealer : Dealer
         The dealer for this round
-    players : List[Player]
-        The players for this round
+    player : Player
+        The current player who is selecting an action
+    other_players : List[Player]  # NOTE: Think about this!!! What should be passed here
+        The other players in the current round  
     """
     dealers_card = dealer.hand[1].value
-    # the policy maps the state to the action
-    action = player.policy(dealers_card)
+    # NOTE: the policy maps the state to the action, based on the current players hand, the dealers card 
+    # and possibly the other face up cards as well 
+    action = player.policy(dealers_card, *other_players)
     print(f"--Dealers Value: {dealers_card}\n--Players Total: {player.total}")
 
     if action == 'stay':
@@ -53,7 +56,7 @@ def single_hand_one_player(dealer, player) -> None:
         # the player has hit
         print('\tDealing another card to them')
         dealer.deal_card(player)
-        single_hand_one_player(dealer, player)
+        single_hand_one_player(dealer, player, *other_players)
 
 def play_round(dealer, players) -> Tuple[List[int], List[bool]]:
     """ 
@@ -74,9 +77,11 @@ def play_round(dealer, players) -> Tuple[List[int], List[bool]]:
     """
     # dealers second card is face up
     for i, player in enumerate(players):
+        # grab the other players so the policy can be based on all cards in play ...
+        other_players = [player for j, player in enumerate(players) if  j != i]
         print(f"Dealing player {i} ...")
         # TODO: implement a recursive function to play a single hand between a player and a dealer
-        single_hand_one_player(dealer, player)
+        single_hand_one_player(dealer, player, other_players)
 
     # dealer finishes his hand
     print("Dealer finishing the round")

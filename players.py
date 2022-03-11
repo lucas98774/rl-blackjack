@@ -31,10 +31,11 @@ class Player(object):
     def bust(self) -> bool:
         return self.hand.bust
 
-    def policy(self, dealers_value) -> str:
-        # the policy will be a function of this players hand and the dealers hand ...
+    def policy(self, dealers_value, *other_palyers) -> str:
+        # the policy will be a function of this players hand, the dealers hand and possibly the other players card as well
+        # TODO: add an encoding for the other_players hands to map to a state ... need to think about how to do this  
+        
         # hardcode a policy for now to simulate a game ...
-
         assumed_total = dealers_value + 8
         if self.total <= assumed_total and self.total < 18:
             return 'hit'
