@@ -124,8 +124,12 @@ class Agent(Player):
     2. Keeping track of the state and the selected actions and the corresponding rewards
     3. ...    
     """
-    # NOTE: additional setup here
+    # NOTE: additional setup here --- need to define the state space and the initialize the value function
+    # 1. state space will be all possible states that can be visited a (potentially use a default dict)
+    # 2. value function will estimate how good it is to be in the curren state (this will get updated in rl)
+    # 3. policy will choose an action based on the value function given the current state
+    # 4. after a reward is received the value function will be updated according to the rl algorithm 
 
-    def policy(self, dealers_value) -> str:
+    def policy(self, dealers_value, *other_players) -> str:
         # NOTE: this will need to be overriden
-        return super().policy(dealers_value)
+        return super().policy(dealers_value,  *other_players)
