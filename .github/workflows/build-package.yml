@@ -38,7 +38,7 @@ jobs:
     - name: Build package
       run: |
         python -m build
-        find dist -iname *.whl -type f -exec pip install {}
+        find dist -iname *.whl -type f -exec pip install {} \;
     - name: Autocommit package
       run: |
         git config --local user.email "action@github.com"
