@@ -56,7 +56,7 @@ def single_hand_one_player(dealer, player, other_players=[]) -> None:
         # the player has hit
         print('\tDealing another card to them')
         dealer.deal_card(player)
-        single_hand_one_player(dealer, player, *other_players)
+        single_hand_one_player(dealer, player, other_players)
 
 def play_round(dealer, players) -> Tuple[List[int], List[bool]]:
     """ 
