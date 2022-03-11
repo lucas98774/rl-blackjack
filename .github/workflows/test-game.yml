@@ -7,11 +7,11 @@ on:
   push:
     paths:
       - '**.py'
-    branches: [ package ]
+    branches: [ foo ]
   pull_request:
     paths: 
       - '**.py'
-    branches: [ package ]
+    branches: [ foo ]
 
 jobs:
   build:
