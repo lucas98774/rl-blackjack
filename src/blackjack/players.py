@@ -1,5 +1,5 @@
 from .tools import Hand, Deck
-# trigger
+
 class Player(object):
     """
     Class for a player in the game
