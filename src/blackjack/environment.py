@@ -1,12 +1,11 @@
-from players import Dealer, Player, IPlayer
-from round import start_round, play_round
+from .players import Dealer, Player, IPlayer
+from .round import start_round, play_round
 
 class Game(object):
     """
     Class to play a game of blackjack with an arbitary number of players
 
-    TODO: Think about what high level metrics should be kept across rounds --- scores? Wins? 
-    
+    TODO: Think about what high level metrics should be kept across rounds --- scores? Wins?
     """
     def __init__(self, nplayers:int = 1, nrounds:int = 1, **kwargs):
         """
