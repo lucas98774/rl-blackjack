@@ -34,7 +34,7 @@ jobs:
         rm -r dist
         git config --local user.email "action@github.com"
         git config --local user.name "GitHub Action"
-        git add dist || git commit -m "Auto remove old package"
+        git commit -m "Auto remove old package"
     - name: Build package
       run: |
         python -m build
@@ -43,7 +43,7 @@ jobs:
       run: |
         git config --local user.email "action@github.com"
         git config --local user.name "GitHub Action"
-        git add dist || git commit -m "Auto rebuild package"
+        git add dist/* || git commit -m "Auto rebuild package"
     - name: push package update
       uses: ad-m/github-push-action@v0.5.0
       with:
