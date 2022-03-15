@@ -2,6 +2,14 @@ import random
 from typing import List
 from abc import ABC, abstractmethod
 
+SUITS = ('Hearts', 'Diamonds', 'Clubs', 'Spades')
+
+LABELS = [str(i) for i in range(2,11)]
+LABELS.extend(('Jack', 'Queen', 'King', 'Ace'))
+
+VALUES = list(range(2, 11))
+VALUES.extend((10,10,10,11))
+
 class Card(object):
     # This is a fundamental object
     """
@@ -127,13 +135,9 @@ class Deck(CardStack):
     suits : List[str]
         suits that a card can take (Clubs, Diamonds, Spades, Hearts)
     """
-    suits = ('Hearts', 'Diamonds', 'Clubs', 'Spades')
-
-    labels = [str(i) for i in range(2,11)]
-    labels.extend(('Jack', 'Queen', 'King', 'Ace'))
-
-    values = list(range(2, 11))
-    values.extend((10,10,10,11))
+    suits = SUITS
+    labels = LABELS
+    values = VALUES
 
     def __init__(self, shuffle:bool = True, repeats:int = 1, ace_val:int = 11):
         """
