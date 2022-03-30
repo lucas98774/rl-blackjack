@@ -8,8 +8,8 @@ from .tools import Hand, Deck
 
 
 # setup helpers for types
-_state = Tuple(int, int)
-_state_and_action = Tuple(int, int, str)
+_state = tuple(int, int)
+_state_and_action = tuple(int, int, str)
 
 # utility function  NOTE: deprecated ...
 # def set_kwargs(**default_kwargs):
