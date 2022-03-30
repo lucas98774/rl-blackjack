@@ -31,7 +31,7 @@ def iterative_mean(current_val, current_mean, count) -> Tuple[float, int]:
     """
     # see here: https://datagenetics.com/blog/november22017/index.html#:~:text=To%20find%20the%20mean%2C%20you,Done!
     # NOTE: could also use the sum of the numbers which may be better in the long term
-    return current_mean + (current_val - current_mean) / (count+1), count+1
+    return count+1, current_mean + (current_val - current_mean) / (count+1)
 
 
 def make_soft_policy(actions, prob=.05):
