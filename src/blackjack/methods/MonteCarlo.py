@@ -62,7 +62,7 @@ class MonteCarloExploringStarts(RLMethod):
 
         return q_func
 
-    def policy_improvement(self, state_w_action, current_val, q_func) -> Dict[_state_and_action, float]:
+    def policy_evaluation(self, state_w_action, current_val, q_func, returns) -> Dict[_state_and_action, float]:
         """ 
         Function to update the q (state-action) function
 
@@ -71,21 +71,28 @@ class MonteCarloExploringStarts(RLMethod):
         state_w_action : List[(int, int), str]
             current state with the action as well
         current_val : float
-            the current value for the state-action (value) function
+            current return for this episode
+        q_func : Dict[_state_and_action, float]
+            state-action function
+        returns : Dict[_state_and_action, float]
+            returns function --- NOTE: how is this different than the q_func???
         Returns
         -------
+        q_func : Dict[_state_and_action, float]
+            updated q_func --- this is pass by reference but be explicity anyway
         
         """
         # NOTE: This should technically be from the returns and not the q function --- is the returns needed??? 
-        count, current_return = self.q_func[state_w_action]
+        count, previous_return = returns[state_w_action]
 
         # NOTE: an explicit return list is not needed since we can incrementally keep track of the mean using the current
         # mean and the number of observations ...
-        new_return, new_count = iterative_mean(current_val, current_return, count)
-        q_func[state_w_action] = (new_count, new_return)
+        new_count, new_return = iterative_mean(current_val, previous_return, count)
+        returns[state_w_action] = (new_count, new_return) 
+        q_func[state_w_action] = new_return
         return q_func
 
-    def policy_evaluation(self, current_state, actions, policy_func) -> Dict[_state, str]:
+    def policy_improvement(self, current_state, actions, policy_func) -> Dict[_state, str]:
         """ 
         Function to update the policy --- make it greedy wrt to the current state-action function
         
@@ -112,6 +119,5 @@ class MonteCarloExploringStarts(RLMethod):
         # get the best action ...
         _, _, greedy_action = max(action_space, action_space.get)
 
-        # note this is pass by reference but still return it anyway ...
         policy_func[current_state] = greedy_action
         return policy_func
