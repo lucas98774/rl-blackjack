@@ -266,6 +266,8 @@ class Agent(Player):
         self.states.reverse
         round_return = 0
 
+        # NOTE: need to figure out how to add in the final_state_reward into this
+
         # trade off between policy improvement and evaluation ...
         if j % 2 == 0:
             update_func = self.method.policy_improvement
@@ -274,16 +276,24 @@ class Agent(Player):
 
         # this will be looping backward since the states have been reversed 
         for i, rstate in enumerate(self.states[1:],start=2):
-            round_reward += self.return_func[rstate]
+            # FIXME: Here is where the final_reward needs to be passed in (just once)
+            # think about how to constuct the reward function more carefully ...
+            round_return += self.return_func[rstate]  # no discounting ...
             if rstate not in self.states[i:]:
                 # update q_function by evaluating the policy
-                self.q_func = self.method.policy_evaluation(rstate, round_reward, self.q_func, self.return_func)
+                self.q_func = self.method.policy_evaluation(rstate, round_return, self.q_func, self.return_func)
                 # update the policy by making it greedy wrt to the q_func
                 self.policy_func = self.method.policy_improvement(rstate, self.actions, self.policy_func)
 
-                
+        # clear the states before returning to the next round
+        self.states = []
+        return
 
-
+    def end_round(self, j, final_reward) -> None:
+        # update using the rl algorithm
+        self.update(j, final_reward)
+        # discard cards
+        super().end_round()
         return
 
     def save(self, out_path=os.getcwd(), indent=4) -> None:
