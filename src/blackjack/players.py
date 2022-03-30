@@ -8,7 +8,6 @@ from .tools import Hand, Deck
 
 
 # setup helpers for types
-# test update for the workflow file
 _state = Tuple[int, int]
 _state_and_action = Tuple[int, int, str]
 
