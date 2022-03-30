@@ -53,6 +53,7 @@ jobs:
         branch: ${{ github.ref }}
   
   test:
+    needs: build
     runs-on: ubuntu-latest
     strategy:
       matrix:
