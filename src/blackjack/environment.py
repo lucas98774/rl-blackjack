@@ -22,7 +22,8 @@ class Game(object):
                 whether to shuffle the deck
             repeats : int
                 the number of decks to use for the game
-            ace_val : int      
+            ace_val : int   
+                value for an ace   
         """
         super(Game, self).__init__()
         self.dealer = Dealer(**kwargs)
