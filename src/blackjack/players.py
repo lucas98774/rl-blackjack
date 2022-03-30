@@ -146,16 +146,16 @@ class Agent(Player):
     """
     Class to add functionality of learning a policy via rl ... hence an agent instead of a human player
     
-    NOTE: This will need to implement all the rl ---
-    1. Initialization of all the states and rewards --- and how that will be stored
-    2. Keeping track of the state and the selected actions and the corresponding rewards
-    3. ...    
+    An agent is a player that is trying to learn via reinforcement learning, although the specific algorithm is an input
+    an agent will:
+    1. define the action space and rewards recieved
+    2. define the states of the game
+    3. initialize and track a value or q function (with help from rl method)
+    4. initialize and track a policy (with help from rl method)
+    5. use a policy for making decisions
+    6. keep track of the states
+    7. keep track of the rewards
     """
-    # NOTE: additional setup here --- need to define the state space and the initialize the value function
-    # 1. state space will be all possible states that can be visited a (potentially use a default dict)
-    # 2. value function will estimate how good it is to be in the curren state (this will get updated in rl)
-    # 3. policy will choose an action based on the value function given the current state
-    # 4. after a reward is received the value function will be updated according to the rl algorithm 
 
     # define action space
     actions = {
@@ -171,7 +171,6 @@ class Agent(Player):
 
     player_values = list(range(12, 22))  # 12-22 (22+ = bust) (this represents the state)
     dealer_values = list(range(2, 12))
-    # NOTE: Think about implementing the rl in a different module then run through here??? ...
 
     def __init__(self, rl_method, **rl_kwargs):
         # TODO: accept any params that will affect the rl --- ie: exploring starts ...
@@ -193,8 +192,20 @@ class Agent(Player):
     def _init_q_func(self):
         return self.method._init_q_func(player_values=self.player_values, dealer_values=self.dealer_values, actions=self.actions)
 
-    def make_return_func(self, this_dict) -> Dict[_state_and_action, _state]:
-        """ Function to make a return function which will return the return for being in a state-action pair """
+    def make_return_func(self, this_dict) -> Dict[_state_and_action, Tuple[int, float]]:
+        """ 
+        Function to make a return function which will return the return for being in a state-action pair 
+
+        Parameters
+        ----------
+        this_dict : Dict[_state_and_action, float]
+            q function
+        
+        Returns
+        -------
+        return_func : Dict[_state_and_action, Tuple(int, float)]
+            return function mapping the state to the count and how good it is to be in that state
+        """
         return_func = {}
         for key in this_dict.keys():
             # initalize the count and the return for each state-action pair to zero-zero
@@ -206,6 +217,18 @@ class Agent(Player):
         Override policy to save the states as well as return the action:
         agent will need to go backwards in time to update the state-action function
         based on the reward
+
+        Parameters
+        ----------
+        dealers_value : int
+            value of the face up card for the dealer
+        other_players : List[?]
+            hands of the other players
+
+        Returns
+        -------
+        _ : str
+            action
         """
         # TODO: figure out we want to encode the other players hands ...
         if self.bust:
