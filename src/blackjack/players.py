@@ -1,29 +1,31 @@
 from functools import wraps
-from random import choice
-from typing import Dict, List, Tuple
+import json
+import os
+import os.path as osp
+from typing import Dict, Tuple
 
-from .tools import Hand, Deck, VALUES, LABELS, SUITS
+from .tools import Hand, Deck
 
 
 # setup helpers for types
 _state = Tuple(int, int)
 _state_and_action = Tuple(int, int, str)
 
-# utility function
-def set_kwargs(**default_kwargs):
-    """ decorator with args """
-    def outer(func):
-        """ decorator to set default kwargs """
-        @wraps(func)
-        def inner(*args, **kwargs):
+# utility function  NOTE: deprecated ...
+# def set_kwargs(**default_kwargs):
+#     """ decorator with args """
+#     def outer(func):
+#         """ decorator to set default kwargs """
+#         @wraps(func)
+#         def inner(*args, **kwargs):
 
-            # update kwargs if default not provided
-            kwargs.update({k:v for k,v in default_kwargs.items() if k not in kwargs})
+#             # update kwargs if default not provided
+#             kwargs.update({k:v for k,v in default_kwargs.items() if k not in kwargs})
 
-            res = func(*args, **kwargs)
-            return res
-        return inner
-    return outer
+#             res = func(*args, **kwargs)
+#             return res
+#         return inner
+#     return outer
 
 class Player(object):
     """
@@ -65,6 +67,14 @@ class Player(object):
         if self.total <= assumed_total and self.total < 18:
             return 'hit'
         return 'stay'
+
+    def clear_hand(self) -> None:
+        """ Function to reset the hand at the end of the round """
+        self.hand = Hand()
+
+    def end_round(self, *args, **kwargs) -> None:
+        """ Function to do any end of round clean up for a player ..."""
+        self.clear_hand()
 
 class IPlayer(Player):
     """
@@ -173,7 +183,6 @@ class Agent(Player):
     dealer_values = list(range(2, 12))
 
     def __init__(self, rl_method, **rl_kwargs):
-        # TODO: accept any params that will affect the rl --- ie: exploring starts ...
         super().__init__()
 
         self.method = rl_method(**rl_kwargs)
@@ -236,3 +245,86 @@ class Agent(Player):
         # NOTE: figure out if I want to keep track of the busted hands as well or not ...
         self.states.append(dealers_value)
         return self.policy_func[self.total, dealers_value]
+
+    # TODO: define a way to traverse through the states and update the policy and the q function after a round
+    def update(self, j, final_state_reward):
+        """
+        Function to replay the states in reverse and update the q function and/or the policy
+
+        Parameters
+        ----------
+        j : int
+            round index
+        final_state_reward : int
+            reward from the final state
+
+        Returns
+        -------
+        """
+        # TODO: This function must assign the return and update the corresponding states .--- not sold that 
+        # a separate variable is needed for the returns but idk what else to do ...
+        self.states.reverse
+        round_return = 0
+
+        # trade off between policy improvement and evaluation ...
+        if j % 2 == 0:
+            update_func = self.method.policy_improvement
+        else:
+            update_func = self.method.policy_evaluation
+
+        # this will be looping backward since the states have been reversed 
+        for i, rstate in enumerate(self.states[1:],start=2):
+            round_reward += self.return_func[rstate]
+            if rstate not in self.states[i:]:
+                # update q_function by evaluating the policy
+                self.q_func = self.method.policy_evaluation(rstate, round_reward, self.q_func, self.return_func)
+                # update the policy by making it greedy wrt to the q_func
+                self.policy_func = self.method.policy_improvement(rstate, self.actions, self.policy_func)
+
+                
+
+
+        return
+
+    def save(self, out_path=os.getcwd(), indent=4) -> None:
+        """
+        Function to save the results of an agent
+
+        Parameters
+        ----------
+        out_path : str, default=os.getcwd()
+            output path for the files
+        indent : int
+            indent for json file
+
+        Returns
+        -------
+        """
+        with open(osp.join(out_path, 'policy.json'), 'w') as fp:
+            json.dump(self.policy_func, fp, indent=indent)
+
+        with open(osp.join(out_path, 'q_func.json'), 'w') as fp:
+            json.dump(self.q_func, fp, indent=indent)
+
+        return
+
+    def load(self, in_path=os.getcwd()) -> None:
+        """
+        Function to load an agent q function and policy
+
+        Parameters
+        ----------
+        in_path : str, default=os.getcwd()
+            input path for the policy.json and q_func.json files
+
+        Returns
+        -------
+        """
+
+        with open(osp.join(in_path, 'policy.json'), 'r') as fp:
+            self.policy_func = json.load(fp)
+
+        with open(osp.join(in_path, 'q_func.json'), 'w') as fp:
+            self.q_func = json.load(fp)
+        
+        return 
