@@ -9,8 +9,8 @@ from .tools import Hand, Deck
 
 # setup helpers for types
 # test update for the workflow file
-_state = tuple(int, int)
-_state_and_action = tuple(int, int, str)
+_state = Tuple[int, int]
+_state_and_action = Tuple[int, int, str]
 
 # utility function  NOTE: deprecated ...
 # def set_kwargs(**default_kwargs):
