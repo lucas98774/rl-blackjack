@@ -57,7 +57,8 @@ class MonteCarloExploringStarts(RLMethod):
         q_func = {}
 
         for player_value, dealer_value, action in player_values, dealer_values, actions.keys():
-            q_func[player_value, dealer_value, action] = self.init_val
+            val = self.init_val if isinstance(self.init_val, (float, int)) else self.init_val()
+            q_func[player_value, dealer_value, action] = val
 
         return q_func
 
