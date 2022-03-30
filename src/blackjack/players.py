@@ -1,7 +1,29 @@
+from functools import wraps
 from random import choice
 from typing import Dict, List, Tuple
+
 from .tools import Hand, Deck, VALUES, LABELS, SUITS
 
+
+# setup helpers for types
+_state = Tuple(int, int)
+_state_and_action = Tuple(int, int, str)
+
+# utility function
+def set_kwargs(**default_kwargs):
+    """ decorator with args """
+    def outer(func):
+        """ decorator to set default kwargs """
+        @wraps(func)
+        def inner(*args, **kwargs):
+
+            # update kwargs if default not provided
+            kwargs.update({k:v for k,v in default_kwargs.items() if k not in kwargs})
+
+            res = func(*args, **kwargs)
+            return res
+        return inner
+    return outer
 
 class Player(object):
     """
@@ -74,6 +96,7 @@ class IPlayer(Player):
 
         return "stay"
 
+
 class Dealer(Player):
     """
     Class for a dealer ... This is the house
@@ -118,32 +141,6 @@ class Dealer(Player):
         self.deck = Deck(shuffle=True, **self.deck_kwargs)
         return
 
-# TODO: define an interative mean function:
-def iterative_mean(current_val, current_mean, count) -> Tuple[float, int]:
-    """
-    Function to compute the iterative mean
-
-    Parameters
-    ----------
-    current_val : float
-        the current value to add to the mean (this will be the reward)
-    current_mean : float
-        the current mean (this will be the current return)
-    count : int
-        the number of observations so far
-
-    Returns
-    -------
-    new_mean : float
-        the updated mean
-    count : int
-        the updated number of observations
-    """
-    # see here: https://datagenetics.com/blog/november22017/index.html#:~:text=To%20find%20the%20mean%2C%20you,Done!
-    # NOTE: could also use the sum of the numbers which may be better in the long term
-    return current_mean + (current_val - current_mean) / (count+1), count+1
-
-
 
 class Agent(Player):
     """
@@ -176,41 +173,27 @@ class Agent(Player):
     dealer_values = list(range(2, 12))
     # NOTE: Think about implementing the rl in a different module then run through here??? ...
 
-    def __init__(self, init_val:int = 5):
+    def __init__(self, rl_method, **rl_kwargs):
         # TODO: accept any params that will affect the rl --- ie: exploring starts ...
         super().__init__()
-        self.init_val = init_val
+
+        self.method = rl_method(**rl_kwargs)
+        self.states = []  # keep track of the states ...
 
         # initialize the policy and the 
         self.policy_func = self._init_policy()
-        self.q_func = self._init_q_func(self.init_val)
+        self.q_func = self._init_q_func()
         
         # define metrics to store for the returns --- one for each state-action pair
         self.return_func = self.make_return_func(self.q_func)
 
+    def _init_policy(self):
+        return self.method._init_policy(player_values=self.player_values, dealer_values=self.dealer_values, actions=self.actions)
+    
+    def _init_q_func(self):
+        return self.method._init_q_func(player_values=self.player_values, dealer_values=self.dealer_values, actions=self.actions)
 
-    def _init_policy(self) -> Dict[Tuple(int, int), str]:
-        """ Function to initialize the policy function --- policy intakes the state and then chooses an action """
-        policy_func = {}
-        for player_value, dealer_value in self.player_values, self.dealer_values:
-            # TODO: check this random initialization
-            policy_func[(player_value, dealer_value)] = choice(list(self.actions.keys()))
-
-        return policy_func
-
-    def _init_q_func(self, init_val=5) -> Dict[Tuple(int, int, str), float]:
-        """ Function to init the state-action function --- will estimate the return from the current state and action """
-        # TODO: find a better place to put this ...
-        # key will be the state and the action --- your hand, dealer value and action
-
-        q_func = {}
-
-        for player_value, dealer_value, action in self.player_values, self.dealer_values, self.action.keys():
-            q_func[player_value, dealer_value, action] = init_val
-
-        return q_func
-
-    def make_return_func(self, this_dict) -> Dict[Tuple(int, int, str), Tuple(int, int)]:
+    def make_return_func(self, this_dict) -> Dict[_state_and_action, _state]:
         """ Function to make a return function which will return the return for being in a state-action pair """
         return_func = {}
         for key in this_dict.keys():
@@ -219,21 +202,14 @@ class Agent(Player):
         return return_func
 
     def policy(self, dealers_value, *other_players) -> str:
-        # NOTE: other players hands are not taken into account rn ...
+        """
+        Override policy to save the states as well as return the action:
+        agent will need to go backwards in time to update the state-action function
+        based on the reward
+        """
+        # TODO: figure out we want to encode the other players hands ...
         if self.bust:
             return 'stay'
+        # NOTE: figure out if I want to keep track of the busted hands as well or not ...
+        self.states.append(dealers_value)
         return self.policy_func[self.total, dealers_value]
-
-    # NOTE: need to add method for updating the policy as well as updating the state-action function (qfunc)
-
-    def update_policy_func(self):
-        """ Function to update the policy """
-        pass
-
-    def update_q_func(self, state, current_val) -> None:
-        """ Function to update the q function """
-        count, current_return = self.q_func[state]
-
-        new_return, new_count = iterative_mean(current_val, current_return, count)
-        self.q_func[state] = (new_count, new_return)
-        return 
