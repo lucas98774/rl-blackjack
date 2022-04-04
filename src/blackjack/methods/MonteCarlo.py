@@ -30,7 +30,7 @@ class MonteCarloExploringStarts(RLMethod):
             an initialized poliy
         """
         policy_func = {}
-        for player_value, dealer_value in player_values, dealer_values:
+        for player_value, dealer_value in [(player_value, dealer_value)  for player_value in  player_values for dealer_value in dealer_values]:
             # TODO: check this random initialization
             policy_func[(player_value, dealer_value)] = choice(list(actions.keys()))
 
@@ -56,7 +56,7 @@ class MonteCarloExploringStarts(RLMethod):
         """
         q_func = {}
 
-        for player_value, dealer_value, action in player_values, dealer_values, actions.keys():
+        for player_value, dealer_value, action in [(player_value, dealer_value, action) for player_value in player_values for dealer_value in dealer_values for action in actions.keys()]:
             val = self.init_val if isinstance(self.init_val, (float, int)) else self.init_val()
             q_func[player_value, dealer_value, action] = val
 
