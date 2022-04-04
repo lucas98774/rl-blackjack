@@ -74,6 +74,9 @@ class InteractiveGame(Game):
         self.nrounds = nrounds
 
 # TODO: does this need to be a separate class?
+# Functionality to add here:
+# 1. Turn off printing
+# ...
 class GameWAgents(Game):
     """
     Class to play blackjack with reinforcement learning agents that are learning to play 

@@ -116,7 +116,6 @@ class Dealer(Player):
     """
     def __init__(self, **kwargs):
         super().__init__()
-        # NOTE: Should the dealer have the deck and the cards?
         self.deck_kwargs = kwargs  # save the deck kwargs
         self.deck = Deck(shuffle=True, **kwargs)
 
@@ -124,8 +123,6 @@ class Dealer(Player):
         return f"Dealer"
     
     def policy(self, dealers_value=None) -> str:
-        # need to intake the second parameter for ease of implementation
-        # Basic policy for the dealer
         total = self.hand.total
         if total < 17:
             return 'hit'
@@ -194,6 +191,9 @@ class Agent(Player):
         
         # define metrics to store for the returns --- one for each state-action pair
         self.return_func = self.make_return_func(self.q_func)
+
+    def __repr__(self) -> str:
+        return "Agent"
 
     def _init_policy(self):
         return self.method._init_policy(player_values=self.player_values, dealer_values=self.dealer_values, actions=self.actions)

@@ -104,7 +104,6 @@ def play_round(dealer, players) -> Tuple[List[int], List[bool]]:
         # grab the other players so the policy can be based on all cards in play ...
         other_players = [player for j, player in enumerate(players) if  j != i]
         print(f"Dealing player {i} ...")
-        # TODO: implement a recursive function to play a single hand between a player and a dealer
         single_hand_one_player(dealer, player, other_players)
 
     # dealer finishes his hand
@@ -132,8 +131,6 @@ def cleanup_round(dealer, players) -> Tuple[List[int], List[bool]]:
     busted : List[bool]
         whether the player busted (dealer comes first)
     """
-    # NOTE: Think about making this a separate function ...
-    # NOTE: Think about returning the scores and who busted here ...
     scores = [dealer.hand.total] + [None] * len(players)
     busted = [dealer.hand.bust] + [None] * len(players)
     for i, player in enumerate(players, start=1):
