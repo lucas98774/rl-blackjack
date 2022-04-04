@@ -58,6 +58,8 @@ def single_hand_one_player(dealer, player, other_players=[]) -> None:
         dealer.deal_card(player)
         single_hand_one_player(dealer, player, other_players)
 
+# TODO: figure out how to generalize this ... reward technical needs to be called for every state ...
+# NOTE: this is essentially the return signal
 def calc_winner(dealer_score, player_score) -> int:
     """
     Function to calc the winner between the dealer and a player
@@ -82,7 +84,7 @@ def calc_winner(dealer_score, player_score) -> int:
 
 def play_round(dealer, players) -> Tuple[List[int], List[bool]]:
     """ 
-    Function to play a round of blackjack  
+    Function to play a round of blackjack --- includes cleanup for a round
     
     Parameters
     ----------
@@ -109,6 +111,7 @@ def play_round(dealer, players) -> Tuple[List[int], List[bool]]:
     print("Dealer finishing the round")
     single_hand_one_player(dealer, dealer)
 
+    # NOTE: Think about making this a separate function ...
     # NOTE: Think about returning the scores and who busted here ...
     scores = [dealer.hand.total] + [None] * len(players)
     busted = [dealer.hand.bust] + [None] * len(players)
