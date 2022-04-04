@@ -179,7 +179,7 @@ class Agent(Player):
         'push': 0
     }
 
-    player_values = list(range(12, 22))  # 12-22 (22+ = bust) (this represents the state)
+    player_values = list(range(4, 22))  # 4-22 (22+ = bust) (this represents the state)
     dealer_values = list(range(2, 12))
 
     def __init__(self, rl_method, **rl_kwargs):
@@ -243,8 +243,19 @@ class Agent(Player):
         if self.bust:
             return 'stay'
         # NOTE: figure out if I want to keep track of the busted hands as well or not ...
-        self.states.append(dealers_value)
-        return self.policy_func[self.total, dealers_value]
+        # Add debugging here ...
+        try:
+            action = self.policy_func[self.total, dealers_value]
+            state_w_action = (self.total, dealers_value, action)
+            self.states.append(state_w_action)
+        except KeyError:
+            print(f'{self.total, dealers_value}')
+            for card in self.hand:
+                print(card)
+
+            raise KeyError
+
+        return action
 
     def update(self, final_state_reward, j=None) -> None:
         """
@@ -276,7 +287,7 @@ class Agent(Player):
 
         # this will be looping backward since the states have been reversed 
         for i, rstate in enumerate(self.states):
-            round_return += self.return_func[rstate]  # no discounting ...
+            round_return += self.return_func[rstate][1]  # no discounting ...
 
             if rstate not in self.states[i:]:
                 # update q_function (and returns) by evaluating the policy
