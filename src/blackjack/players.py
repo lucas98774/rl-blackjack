@@ -246,7 +246,7 @@ class Agent(Player):
         self.states.append(dealers_value)
         return self.policy_func[self.total, dealers_value]
 
-    def update(self, final_state_reward, j=None):
+    def update(self, final_state_reward, j=None) -> None:
         """
         Function to replay the states in reverse and update the q function and/or the policy
 
@@ -254,7 +254,7 @@ class Agent(Player):
         ----------
         j : int
             round index
-            
+
         final_state_reward : int
             reward from the final state
 

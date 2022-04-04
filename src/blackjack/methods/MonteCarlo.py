@@ -1,6 +1,6 @@
 from ._base_ import RLMethod, _state, _state_and_action, iterative_mean
 from random import choice
-from typing import Dict
+from typing import Dict, Tuple
 
 class MonteCarloExploringStarts(RLMethod):
     """
@@ -62,7 +62,7 @@ class MonteCarloExploringStarts(RLMethod):
 
         return q_func
 
-    def policy_evaluation(self, state_w_action, current_val, q_func, returns) -> Dict[_state_and_action, float]:
+    def policy_evaluation(self, state_w_action, current_val, q_func, returns) -> Tuple[Dict[_state_and_action, float], Dict[_state_and_action, float]]:
         """ 
         Function to update the q (state-action) function
 
