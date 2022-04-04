@@ -1,4 +1,4 @@
-from blackjack import methods
+import blackjack.methods
 
 from blackjack import GameWAgents
 from blackjack.methods import MCExploringStarts as MCES
