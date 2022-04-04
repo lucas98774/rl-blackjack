@@ -246,8 +246,7 @@ class Agent(Player):
         self.states.append(dealers_value)
         return self.policy_func[self.total, dealers_value]
 
-    # TODO: define a way to traverse through the states and update the policy and the q function after a round
-    def update(self, j, final_state_reward):
+    def update(self, final_state_reward, j=None):
         """
         Function to replay the states in reverse and update the q function and/or the policy
 
@@ -255,6 +254,7 @@ class Agent(Player):
         ----------
         j : int
             round index
+            
         final_state_reward : int
             reward from the final state
 
@@ -263,25 +263,24 @@ class Agent(Player):
         """
         # TODO: This function must assign the return and update the corresponding states .--- not sold that 
         # a separate variable is needed for the returns but idk what else to do ...
-        self.states.reverse
-        round_return = 0
+        self.states.reverse()
+        
+        # initialize the round return as the terminal state reward (win +1, push 0 or loss -1)
+        round_return = final_state_reward
 
-        # NOTE: need to figure out how to add in the final_state_reward into this
-
-        # trade off between policy improvement and evaluation ...
-        if j % 2 == 0:
-            update_func = self.method.policy_improvement
-        else:
-            update_func = self.method.policy_evaluation
+        # # trade off between policy improvement and evaluation ...
+        # if j % 2 == 0:
+        #     update_func = self.method.policy_improvement
+        # else:
+        #     update_func = self.method.policy_evaluation
 
         # this will be looping backward since the states have been reversed 
-        for i, rstate in enumerate(self.states[1:],start=2):
-            # FIXME: Here is where the final_reward needs to be passed in (just once)
-            # think about how to constuct the reward function more carefully ...
+        for i, rstate in enumerate(self.states):
             round_return += self.return_func[rstate]  # no discounting ...
+
             if rstate not in self.states[i:]:
-                # update q_function by evaluating the policy
-                self.q_func = self.method.policy_evaluation(rstate, round_return, self.q_func, self.return_func)
+                # update q_function (and returns) by evaluating the policy
+                self.q_func, self.return_func = self.method.policy_evaluation(rstate, round_return, self.q_func, self.return_func)
                 # update the policy by making it greedy wrt to the q_func
                 self.policy_func = self.method.policy_improvement(rstate, self.actions, self.policy_func)
 
@@ -289,9 +288,9 @@ class Agent(Player):
         self.states = []
         return
 
-    def end_round(self, j, final_reward) -> None:
+    def end_round(self, final_reward, j=None) -> None:
         # update using the rl algorithm
-        self.update(j, final_reward)
+        self.update(final_reward, j)
         # discard cards
         super().end_round()
         return
