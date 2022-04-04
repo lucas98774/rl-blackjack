@@ -277,7 +277,7 @@ class Agent(Player):
         self.states.reverse()
         
         # initialize the round return as the terminal state reward (win +1, push 0 or loss -1)
-        round_return = final_state_reward
+        round_return = 0
 
         # # trade off between policy improvement and evaluation ...
         # if j % 2 == 0:
@@ -285,15 +285,19 @@ class Agent(Player):
         # else:
         #     update_func = self.method.policy_evaluation
 
-        # this will be looping backward since the states have been reversed 
-        for i, rstate in enumerate(self.states):
-            round_return += self.return_func[rstate][1]  # no discounting ...
+        # this will be looping backward since the states have been reversed and starts at the state before the terminal state
+        for i, rstate in enumerate(self.states, start=1):
+            if i == 1:
+                # reward from the terminal state ...(win +1, push 0 or loss -1)
+                round_return += final_state_reward
+            else:
+                round_return += self.return_func[rstate][1]  # no discounting ...
 
             if rstate not in self.states[i:]:
                 # update q_function (and returns) by evaluating the policy
                 self.q_func, self.return_func = self.method.policy_evaluation(rstate, round_return, self.q_func, self.return_func)
                 # update the policy by making it greedy wrt to the q_func
-                self.policy_func = self.method.policy_improvement(rstate, self.actions, self.policy_func)
+                self.policy_func = self.method.policy_improvement(rstate, self.actions, self.policy_func, self.q_func)
 
         # clear the states before returning to the next round
         self.states = []
