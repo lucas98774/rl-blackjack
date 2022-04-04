@@ -4,8 +4,8 @@ from random import random
 from typing import Tuple
 
 # setup helpers for types
-_state = Tuple(int, int)
-_state_and_action = Tuple(int, int, str)
+_state = Tuple[int, int]
+_state_and_action = Tuple[int, int, str]
 
 # utility functions
 
