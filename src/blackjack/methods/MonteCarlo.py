@@ -92,7 +92,7 @@ class MonteCarloExploringStarts(RLMethod):
         q_func[state_w_action] = new_return
         return q_func, returns
 
-    def policy_improvement(self, current_state, actions, policy_func) -> Dict[_state, str]:
+    def policy_improvement(self, current_state, actions, policy_func, q_func) -> Dict[_state, str]:
         """ 
         Function to update the policy --- make it greedy wrt to the current state-action function
         
@@ -104,6 +104,8 @@ class MonteCarloExploringStarts(RLMethod):
             possible actions
         policy_func : Dict[(int, int), str]
             current policy
+        q_func : Dict[(int, int, str), float]
+            q function
 
         Returns
         -------
@@ -111,13 +113,14 @@ class MonteCarloExploringStarts(RLMethod):
             updated policy --- this is pass by reference but be explicity anyway
         """
         
-        # find applicable states:
-        relevant_actions = [(*current_state, action) for action in actions.keys()]
+        # find applicable states (including the action):
+        player_value, dealer_value, _ = current_state
+        relevant_actions = [(player_value, dealer_value, action) for action in actions.keys()]
         # setup action space where we need to find the max
-        action_space = {k:v for k,v in self.q_func if k in relevant_actions}
+        action_space = {k:v for k,v in q_func.items() if k in relevant_actions}
 
         # get the best action ...
-        _, _, greedy_action = max(action_space, action_space.get)
+        _, _, greedy_action = max(action_space)
 
         policy_func[current_state] = greedy_action
         return policy_func
