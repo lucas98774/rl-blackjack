@@ -79,18 +79,18 @@ class MonteCarloExploringStarts(RLMethod):
         Returns
         -------
         q_func : Dict[_state_and_action, float]
-            updated q_func --- this is pass by reference but be explicity anyway
-        
+            updated q_func --- (this is pass by reference but be explicity anyway)
+
+        returns : Dict[_state_and_action, float]
+            long term rewards from a state and action pair (this is pass by reference but be explicity anyway)
         """
-        # NOTE: This should technically be from the returns and not the q function --- is the returns needed??? 
+        # TODO: is the returns dictionary needed? 
         count, previous_return = returns[state_w_action]
 
-        # NOTE: an explicit return list is not needed since we can incrementally keep track of the mean using the current
-        # mean and the number of observations ...
         new_count, new_return = iterative_mean(current_val, previous_return, count)
         returns[state_w_action] = (new_count, new_return) 
         q_func[state_w_action] = new_return
-        return q_func
+        return q_func, returns
 
     def policy_improvement(self, current_state, actions, policy_func) -> Dict[_state, str]:
         """ 
