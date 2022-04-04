@@ -1,5 +1,7 @@
-from blackjack.environment import GameWAgents
-from blackjack.methods.MonteCarlo import MonteCarloExploringStarts as MCES
+from blackjack import methods
+
+from blackjack import GameWAgents
+from blackjack.methods import MCExploringStarts as MCES
 
 def test_agent(n_rounds=5):
     game = GameWAgents(MCES, nrounds=n_rounds)

@@ -2,7 +2,7 @@ from ._base_ import RLMethod, _state, _state_and_action, iterative_mean
 from random import choice
 from typing import Dict, Tuple
 
-class MonteCarloExploringStarts(RLMethod):
+class MCExploringStarts(RLMethod):
     """
     Class for monte carlo with exploring starts   
 
