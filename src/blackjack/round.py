@@ -109,8 +109,29 @@ def play_round(dealer, players) -> Tuple[List[int], List[bool]]:
 
     # dealer finishes his hand
     print("Dealer finishing the round")
+    # FIXME: beware this makes for some odd printout ... since both the player and the dealer are the same ...
     single_hand_one_player(dealer, dealer)
 
+    return
+
+def cleanup_round(dealer, players) -> Tuple[List[int], List[bool]]:
+    """
+    Function to calculate the winners and clean up the hands ...
+
+    Parameters
+    ----------
+    dealer : Dealer
+        dealer
+    players : List[Player]
+        players
+    
+    Returns
+    -------
+    scores : List[int]
+        scores for the dealer and the players
+    busted : List[bool]
+        whether the player busted (dealer comes first)
+    """
     # NOTE: Think about making this a separate function ...
     # NOTE: Think about returning the scores and who busted here ...
     scores = [dealer.hand.total] + [None] * len(players)
@@ -121,5 +142,6 @@ def play_round(dealer, players) -> Tuple[List[int], List[bool]]:
         result = calc_winner(dealer.hand.total, player.hand.total)
         player.end_round(result)
 
+    dealer.end_round()
         
     return scores, busted
