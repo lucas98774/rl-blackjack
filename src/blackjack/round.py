@@ -110,11 +110,11 @@ def play_round(dealer, players) -> Tuple[List[int], List[bool]]:
     single_hand_one_player(dealer, dealer)
 
     # NOTE: Think about returning the scores and who busted here ...
-    scores = [dealer.hand.total]
-    busted = [dealer.hand.bust]
-    for player in players:
-        scores.append(player.hand.total)
-        busted.append(player.hand.bust)
+    scores = [dealer.hand.total] + [None] * len(players)
+    busted = [dealer.hand.bust] + [None] * len(players)
+    for i, player in enumerate(players, start=1):
+        scores[i] = player.hand.total
+        busted[i] = player.hand.bust
         result = calc_winner(dealer.hand.total, player.hand.total)
         player.end_round(result)
 
