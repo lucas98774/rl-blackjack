@@ -1,5 +1,5 @@
-from .players import Dealer, Player, IPlayer
-from .round import start_round, play_round
+from .players import Dealer, Player, IPlayer, Agent
+from .round import start_round, play_round, cleanup_round
 
 class Game(object):
     """
@@ -22,7 +22,6 @@ class Game(object):
                 whether to shuffle the deck
             repeats : int
                 the number of decks to use for the game
-            ace_val : int      
         """
         super(Game, self).__init__()
         self.dealer = Dealer(**kwargs)
@@ -57,11 +56,13 @@ class Game(object):
 
     def play(self) -> None:
         # NOTE: Think about what metrics should be tracked ...
-        for _ in range(self.nrounds):
+        for i in range(self.nrounds):
+            print(f'Starting round {i} ...')
             self.dealer.reset_deck()
             start_round(self.dealer, self.players)
-            this_score, this_busted = play_round(self.dealer, self.players)
+            play_round(self.dealer, self.players)
             self.show_score()
+            this_score, this_busted = cleanup_round(self.dealer, self.players)
 
 class InteractiveGame(Game):
     """ Class for an interactive Game --- assuming the player is the interactive portion """
@@ -71,3 +72,40 @@ class InteractiveGame(Game):
         self.dealer = Dealer(**kwargs)
         self.players = [IPlayer()]
         self.nrounds = nrounds
+
+# TODO: does this need to be a separate class?
+# Functionality to add here:
+# 1. Turn off printing
+# ...
+class GameWAgents(Game):
+    """
+    Class to play blackjack with reinforcement learning agents that are learning to play 
+   
+    """
+    def __init__(self, rl_method, rl_kwargs={}, nagents: int=1, nplayers: int = 0, nrounds: int = 1, **kwargs):
+        super().__init__(nplayers, nrounds, **kwargs)
+        """
+        Initialization function for a game
+
+        Parameters
+        ----------
+        rl_method : RLMethod
+            reinforcement learning method
+        rl_kwargs : Dict[str, ?]
+            kwargs for reinforcement learning method
+        nagents : int, default=1
+            number of agents 
+        nplayers : int, default=0
+            number of players (not including the dealer) playing the game
+        nrounds : int, default=1
+            number of rounds to play
+        kwargs : Dict
+            keyword arguments for the Deck:
+
+            shuffle : bool (default = True)
+                whether to shuffle the deck
+            repeats : int
+                the number of decks to use for the game
+        """
+        # add the agents into the game at the end so they can count cards ...
+        self.players += [Agent(rl_method, **rl_kwargs) for i in range(nagents)]

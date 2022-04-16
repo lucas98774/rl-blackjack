@@ -58,9 +58,33 @@ def single_hand_one_player(dealer, player, other_players=[]) -> None:
         dealer.deal_card(player)
         single_hand_one_player(dealer, player, other_players)
 
+# TODO: figure out how to generalize this ... reward technical needs to be called for every state ...
+# NOTE: this is essentially the return signal
+def calc_winner(dealer_score, player_score) -> int:
+    """
+    Function to calc the winner between the dealer and a player
+    
+    Parameters
+    ----------
+    dealer_score : int
+        dealer's score
+    player_score : int
+        player's score
+    
+    Returns
+    -------
+    result : int
+        whether the _player_ won --- 1, 0 is push and -1 is loss
+    """
+    if player_score > dealer_score:
+        return 1
+    elif player_score == dealer_score:
+        return 0
+    return -1
+
 def play_round(dealer, players) -> Tuple[List[int], List[bool]]:
     """ 
-    Function to play a round of blackjack  
+    Function to play a round of blackjack --- includes cleanup for a round
     
     Parameters
     ----------
@@ -80,18 +104,41 @@ def play_round(dealer, players) -> Tuple[List[int], List[bool]]:
         # grab the other players so the policy can be based on all cards in play ...
         other_players = [player for j, player in enumerate(players) if  j != i]
         print(f"Dealing player {i} ...")
-        # TODO: implement a recursive function to play a single hand between a player and a dealer
         single_hand_one_player(dealer, player, other_players)
 
     # dealer finishes his hand
     print("Dealer finishing the round")
+    # FIXME: beware this makes for some odd printout ... since both the player and the dealer are the same ...
     single_hand_one_player(dealer, dealer)
 
-    # NOTE: Think about returning the scores and who busted here ...
-    scores = []
-    busted = []
-    for player in [dealer, *players]:
-        scores.append(player.hand.total)
-        busted.append(player.hand.bust)
+    return
+
+def cleanup_round(dealer, players) -> Tuple[List[int], List[bool]]:
+    """
+    Function to calculate the winners and clean up the hands ...
+
+    Parameters
+    ----------
+    dealer : Dealer
+        dealer
+    players : List[Player]
+        players
+    
+    Returns
+    -------
+    scores : List[int]
+        scores for the dealer and the players
+    busted : List[bool]
+        whether the player busted (dealer comes first)
+    """
+    scores = [dealer.hand.total] + [None] * len(players)
+    busted = [dealer.hand.bust] + [None] * len(players)
+    for i, player in enumerate(players, start=1):
+        scores[i] = player.hand.total
+        busted[i] = player.hand.bust
+        result = calc_winner(dealer.hand.total, player.hand.total)
+        player.end_round(result)
+
+    dealer.end_round()
         
     return scores, busted
